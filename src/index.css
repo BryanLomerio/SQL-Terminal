@@ -1,0 +1,134 @@
+/* Global Styles */
+body {
+  background-color: #121212;
+  color: #eee;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+/* Container */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Heading */
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+/* SQL Query Textarea */
+.query-input {
+  width: 100%;
+  font-size: 16px;
+  padding: 10px;
+  border: 1px solid #444;
+  resize: vertical;
+  box-sizing: border-box;
+  background-color: #1e1e1e;
+  color: #eee;
+}
+
+/* Buttons */
+.execute-button {
+  display: block;
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  margin: 10px 0 20px;
+  cursor: pointer;
+  background-color: #333;
+  border: none;
+  color: #eee;
+  transition: background-color 0.3s ease;
+}
+
+.execute-button:hover {
+  background-color: #555;
+}
+
+/* Results and Table Styling */
+.results {
+  margin-top: 20px;
+}
+
+.result {
+  margin-bottom: 20px;
+  /* Allow horizontal scrolling if table content overflows */
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+  background-color: #1e1e1e;
+}
+
+th,
+td {
+  border: 1px solid #444;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #333;
+  color: #eee;
+}
+
+td {
+  color: #eee;
+}
+
+/* Error Message */
+.error {
+  color: #ff5555;
+  font-weight: bold;
+}
+
+/* Instructions Area */
+.instructions pre {
+  background-color: #1e1e1e;
+  padding: 10px;
+  border: 1px solid #444;
+  overflow-x: auto;
+  color: #eee;
+}
+
+/* Media Query for Smaller Screens */
+@media (max-width: 600px) {
+  .container {
+    padding: 10px;
+  }
+  h1 {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  .query-input,
+  .execute-button {
+    font-size: 14px;
+    padding: 8px;
+  }
+  .execute-button {
+    margin: 8px 0 16px;
+  }
+  .instructions pre {
+    font-size: 12px;
+    padding: 8px;
+  }
+  th,
+  td {
+    padding: 4px;
+    font-size: 0.60rem;
+  }
+  /* Ensure the table remains responsive */
+  .result table {
+    font-size: 12px;
+    width: 100%;
+  }
+}
