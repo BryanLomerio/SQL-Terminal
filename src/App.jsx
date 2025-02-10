@@ -32,7 +32,10 @@ function MainApp() {
 
   return (
     <div className="container">
-         <h1>THE JOURNEY DOESN’T END, <br></br>KEEP LEVELING UP!</h1>
+      <h1>
+        THE JOURNEY DOESN’T END, <br />
+        KEEP LEVELING UP!
+      </h1>
       {loading ? (
         <p>Loading database...</p>
       ) : (
@@ -51,6 +54,31 @@ function MainApp() {
           )}
         </>
       )}
+             <div
+        style={{
+          position: 'fixed',
+          right: '10px',
+          bottom: '10px',
+          backgroundColor: '#121212',
+          padding: '8px 12px',
+          borderRadius: '6px',
+          color: '#00A8E8',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          textAlign: 'center',
+          zIndex: 1000,
+        }}
+      >
+      <a
+        href="https://sql-learning-journey-tracker.vercel.app/"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ color: 'inherit' }}
+      >
+      SQL Topics
+    </a>
+  </div>
+
     </div>
   );
 }

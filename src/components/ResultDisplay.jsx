@@ -1,6 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { DatabaseContext } from '../context/DatabaseContext';
 
 const ResultsDisplay = ({ results }) => {
+  const { tableCreated } = useContext(DatabaseContext);
+
+  if (tableCreated) {
+    return <p>Table created successfully!</p>;
+  }
+
   if (results.length === 0) {
     return <p>No results to display.</p>;
   }

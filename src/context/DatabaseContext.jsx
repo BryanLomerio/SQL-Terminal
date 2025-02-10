@@ -6,6 +6,8 @@ export const DatabaseContext = createContext();
 export const DatabaseProvider = ({ children }) => {
   const [db, setDb] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [tableCreated, setTableCreated] = useState(false);  
+
   const uint8ArrayToBase64 = (u8Arr) => {
     const CHUNK_SIZE = 0x8000;
     let index = 0;
@@ -40,7 +42,6 @@ export const DatabaseProvider = ({ children }) => {
           database = new SQL.Database(uInt8Array);
           console.log('Database loaded from localStorage.');
         } else {
-
           // Create data
           database = new SQL.Database();
           const defaultSchema = `
@@ -131,7 +132,8 @@ export const DatabaseProvider = ({ children }) => {
           database.run(defaultSchema);
           console.log('Created new database with default schema and sample data.');
 
-          // save local
+          // Mark table as created and save to localStorage
+          setTableCreated(true);
           const data = database.export();
           localStorage.setItem('employeeDb', uint8ArrayToBase64(data));
         }
@@ -143,7 +145,6 @@ export const DatabaseProvider = ({ children }) => {
       });
   }, []);
 
-  // Update local
   const updateDatabaseStorage = () => {
     if (db) {
       const data = db.export();
@@ -151,7 +152,7 @@ export const DatabaseProvider = ({ children }) => {
     }
   };
 
-  // add a new employee 
+  // Add a new employee
   const addEmployee = (firstName, lastName, departmentId, position, salary) => {
     if (db) {
       const stmt = db.prepare(
@@ -165,7 +166,7 @@ export const DatabaseProvider = ({ children }) => {
     }
   };
 
-  // update the salary 
+  // Update employee salary
   const updateEmployeeSalary = (employeeId, newSalary) => {
     if (db) {
       const stmt = db.prepare(
@@ -180,7 +181,7 @@ export const DatabaseProvider = ({ children }) => {
 
   return (
     <DatabaseContext.Provider
-      value={{ db, loading, updateDatabaseStorage, addEmployee, updateEmployeeSalary }}
+      value={{ db, loading, tableCreated, updateDatabaseStorage, addEmployee, updateEmployeeSalary }}
     >
       {children}
     </DatabaseContext.Provider>
