@@ -216,7 +216,8 @@ td {
   }
 
   .schema-table h3 {
-    font-size: 1em;
+    font-size: .8em;
+    text-overflow: none;
   }
   .schema-column {
     display: flex;
