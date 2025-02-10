@@ -1,4 +1,3 @@
-/* Global Styles */
 body {
   background-color: #121212;
   color: #eee;
@@ -6,22 +5,18 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
-
-/* Container */
 .container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
 }
 
-/* Heading */
 h1 {
   text-align: center;
   margin-bottom: 20px;
   color: #fff;
 }
 
-/* SQL Query Textarea */
 .query-input {
   width: 100%;
   font-size: 16px;
@@ -33,7 +28,6 @@ h1 {
   color: #eee;
 }
 
-/* Buttons */
 .execute-button {
   display: block;
   width: 100%;
@@ -51,14 +45,12 @@ h1 {
   background-color: #555;
 }
 
-/* Results and Table Styling */
 .results {
   margin-top: 20px;
 }
 
 .result {
   margin-bottom: 20px;
-  /* Allow horizontal scrolling if table content overflows */
   overflow-x: auto;
 }
 
@@ -85,13 +77,11 @@ td {
   color: #eee;
 }
 
-/* Error Message */
 .error {
   color: #ff5555;
   font-weight: bold;
 }
 
-/* Instructions Area */
 .instructions pre {
   background-color: #1e1e1e;
   padding: 10px;
@@ -100,7 +90,6 @@ td {
   color: #eee;
 }
 
-/* Media Query for Smaller Screens */
 @media (max-width: 600px) {
   .container {
     padding: 10px;
@@ -126,9 +115,111 @@ td {
     padding: 4px;
     font-size: 0.60rem;
   }
-  /* Ensure the table remains responsive */
   .result table {
     font-size: 12px;
     width: 100%;
+  }
+}
+
+.schema-diagram {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  background-color: #f2f2f2;
+  position: relative;
+}
+
+.schema-table {
+  background-color: #fff;
+  border: 2px solid #333;
+  border-radius: 5px;
+  padding: 10px;
+  min-width: 220px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  color: black;
+}
+
+.schema-table h3 {
+  margin: 0;
+  padding: 8px;
+  text-align: center;
+  background-color: #333;
+  color: #fff;
+  border-radius: 3px;
+}
+
+.schema-table ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.schema-column {
+  padding: 4px 8px;
+  border-bottom: 1px dashed #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.schema-column:last-child {
+  border-bottom: none;
+}
+
+.schema-column.primary {
+  font-weight: bold;
+  background-color: #e0ffe0;
+  color: #d9534f;
+}
+
+.column-type {
+  font-size: 0.9em;
+  color: #555;
+}
+
+.foreign-key {
+  font-size: 0.85em;
+  color: #007bff;
+  margin-left: 5px;
+}
+
+@media (max-width: 600px) {
+  .schema-diagram {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    justify-content: center;
+    padding: 15px;
+    
+  }
+
+  .schema-table {
+    min-width: 100%;
+    max-width: 100%;
+    padding: 3px;
+  }
+
+  .schema-table h3 {
+    font-size: 1em;
+  }
+  .schema-column {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    
+  }
+
+  .column-type {
+    font-size: 0.8em;
+  }
+
+  .foreign-key {
+    font-size: 0.3em;
   }
 }

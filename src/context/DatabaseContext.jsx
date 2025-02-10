@@ -6,8 +6,6 @@ export const DatabaseContext = createContext();
 export const DatabaseProvider = ({ children }) => {
   const [db, setDb] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  // Helper 
   const uint8ArrayToBase64 = (u8Arr) => {
     const CHUNK_SIZE = 0x8000;
     let index = 0;
@@ -42,7 +40,8 @@ export const DatabaseProvider = ({ children }) => {
           database = new SQL.Database(uInt8Array);
           console.log('Database loaded from localStorage.');
         } else {
-          // Create database
+
+          // Create data
           database = new SQL.Database();
           const defaultSchema = `
             -- departments table.
@@ -52,7 +51,7 @@ export const DatabaseProvider = ({ children }) => {
                 location TEXT
             );
             
-            -- employees table.
+            -- employees table (salary column added).
             CREATE TABLE IF NOT EXISTS employees (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 first_name TEXT NOT NULL,
@@ -92,12 +91,12 @@ export const DatabaseProvider = ({ children }) => {
                 FOREIGN KEY(employee_id) REFERENCES employees(id)
             );
             
-            -- default data into departments.
+            -- default data for departments.
             INSERT INTO departments (name, location) VALUES ('Engineering', 'Building A');
             INSERT INTO departments (name, location) VALUES ('Human Resources', 'Building B');
             INSERT INTO departments (name, location) VALUES ('Marketing', 'Building C');
             
-            -- default data into employees.
+            -- default data for employees (including salary).
             INSERT INTO employees (first_name, last_name, department_id, position, salary)
               VALUES ('Alice', 'Smith', 1, 'Software Engineer', 85000);
             INSERT INTO employees (first_name, last_name, department_id, position, salary)
@@ -107,7 +106,7 @@ export const DatabaseProvider = ({ children }) => {
             INSERT INTO employees (first_name, last_name, department_id, position, salary)
               VALUES ('Diana', 'Brown', 3, 'Marketing Specialist', 70000);
             
-            -- default data into projects.
+            -- default data for projects.
             INSERT INTO projects (name, start_date, end_date)
               VALUES ('Project Apollo', '2024-01-01', '2024-06-30');
             INSERT INTO projects (name, start_date, end_date)
@@ -119,7 +118,7 @@ export const DatabaseProvider = ({ children }) => {
             INSERT INTO employee_projects (employee_id, project_id) VALUES (1, 2);
             INSERT INTO employee_projects (employee_id, project_id) VALUES (4, 2);
             
-            -- default data into addresses.
+            -- default data for addresses.
             INSERT INTO addresses (employee_id, address_line1, address_line2, city, state, zip)
               VALUES (1, '123 Main St', 'Apt 4', 'New York', 'NY', '10001');
             INSERT INTO addresses (employee_id, address_line1, address_line2, city, state, zip)
@@ -132,7 +131,7 @@ export const DatabaseProvider = ({ children }) => {
           database.run(defaultSchema);
           console.log('Created new database with default schema and sample data.');
 
-          // Save database sa localStorage
+          // save local
           const data = database.export();
           localStorage.setItem('employeeDb', uint8ArrayToBase64(data));
         }
@@ -144,7 +143,7 @@ export const DatabaseProvider = ({ children }) => {
       });
   }, []);
 
-  // update localStorage after ng DB modif
+  // Update local
   const updateDatabaseStorage = () => {
     if (db) {
       const data = db.export();
@@ -152,8 +151,37 @@ export const DatabaseProvider = ({ children }) => {
     }
   };
 
+  // add a new employee 
+  const addEmployee = (firstName, lastName, departmentId, position, salary) => {
+    if (db) {
+      const stmt = db.prepare(
+        `INSERT INTO employees (first_name, last_name, department_id, position, salary)
+         VALUES (?, ?, ?, ?, ?)`
+      );
+      stmt.run([firstName, lastName, departmentId, position, salary]);
+      stmt.free();
+      updateDatabaseStorage();
+      console.log(`Added employee ${firstName} ${lastName} with salary ${salary}`);
+    }
+  };
+
+  // update the salary 
+  const updateEmployeeSalary = (employeeId, newSalary) => {
+    if (db) {
+      const stmt = db.prepare(
+        "UPDATE employees SET salary = ? WHERE id = ?"
+      );
+      stmt.run([newSalary, employeeId]);
+      stmt.free();
+      updateDatabaseStorage();
+      console.log(`Updated employee ID ${employeeId} with new salary ${newSalary}`);
+    }
+  };
+
   return (
-    <DatabaseContext.Provider value={{ db, loading, updateDatabaseStorage }}>
+    <DatabaseContext.Provider
+      value={{ db, loading, updateDatabaseStorage, addEmployee, updateEmployeeSalary }}
+    >
       {children}
     </DatabaseContext.Provider>
   );
