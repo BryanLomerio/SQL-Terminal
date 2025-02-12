@@ -152,6 +152,18 @@ function MainApp() {
                         >
                             Check Syntax
                         </a>
+                        <a
+                            href="https://github.com/BryanLomerio"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                                color: 'white',
+                                display: 'block',
+                                margin: '5px 0'
+                            }}
+                        >
+                            GitHub
+                        </a>
                     </div>
                 )}
             </div>
@@ -179,31 +191,6 @@ function MainApp() {
                     )}
                 </>
             )}
-            <div style={{
-                position: 'fixed',
-                bottom: '0',
-                left: '0',
-                width: '100%',
-                backgroundColor: '#121212',
-                padding: '5px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                textAlign: 'center',
-            }}>
-                <a
-                    href="https://github.com/BryanLomerio"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                        color: 'white',
-                        fontWeight: 'bold',
-                        fontSize: '13px',
-                    }}
-                >
-                    GitHub
-                </a>
-            </div>
 
         </div>
     );
