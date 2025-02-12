@@ -3,83 +3,50 @@ import { DatabaseContext } from '../context/DatabaseContext';
 
 const SchemaDiagram = () => {
   const { db } = useContext(DatabaseContext);
-  const [schema, setSchema] = useState([]);
+  const [tables, setTables] = useState([]);
 
   useEffect(() => {
-    if (!db) return;
+    if (db) {
+      const tablesResult = db.exec("SELECT name FROM sqlite_master WHERE type='table'");
 
-    const query = `
-      SELECT 
-        m.name as table_name, 
-        p.name as column_name,
-        p.type,
-        p.pk as is_primary_key,
-        fkl."table" as foreign_table,
-        fkl."to" as foreign_column
-      FROM sqlite_master AS m
-      JOIN pragma_table_info(m.name) AS p
-      LEFT JOIN pragma_foreign_key_list(m.name) AS fkl
-        ON p.cid = fkl."from"
-      WHERE m.type = 'table'
-      ORDER BY m.name, p.cid
-    `;
+      if (tablesResult.length > 0) {
 
-    try {
-      const results = db.exec(query);
-      if (results.length > 0) {
-        const columns = results[0].columns;
-        const values = results[0].values;
+        const tableNames = tablesResult[0].values.map(row => row[0]);
 
-        // schema
-        const schemaData = values.reduce((acc, row) => {
-          const tableName = row[columns.indexOf('table_name')];
-          const column = {
-            name: row[columns.indexOf('column_name')],
-            type: row[columns.indexOf('type')],
-            isPrimary: !!row[columns.indexOf('is_primary_key')],
-            foreignTable: row[columns.indexOf('foreign_table')],
-            foreignColumn: row[columns.indexOf('foreign_column')]
-          };
+        const tableData = tableNames.map(name => {
+          const infoResult = db.exec(`PRAGMA table_info(${name})`);
+          const columns = infoResult.length > 0 ? infoResult[0].values : [];
+          return { name, columns };
+        });
 
-          const tableIndex = acc.findIndex(t => t.tableName === tableName);
-          if (tableIndex === -1) {
-            acc.push({
-              tableName,
-              columns: [column]
-            });
-          } else {
-            acc[tableIndex].columns.push(column);
-          }
-          return acc;
-        }, []);
-        setSchema(schemaData);
+        setTables(tableData);
       }
-    } catch (error) {
-      console.error('Error fetching schema:', error);
     }
   }, [db]);
 
   return (
-    <div className="schema-diagram">
-      {schema.map((table, idx) => (
-        <div key={idx} className="schema-table">
-          <h3>{table.tableName}</h3>
-          <ul>
-            {table.columns.map((col, i) => (
-              <li
-                key={i}
-                className={`schema-column ${col.isPrimary ? 'primary' : ''}`}
-              >
-                {col.name} <span className="column-type">({col.type})</span>
-                {col.foreignTable && (
-                  <span className="foreign-key">
-                    {' '}
-                    → {col.foreignTable}.{col.foreignColumn}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
+    <div>
+      {tables.map(table => (
+        <div key={table.name} style={{ marginBottom: '20px' }}>
+          <h3>{table.name}</h3>
+          <table border="1" cellPadding="5">
+            <thead>
+              <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+                <th>Not Null</th>
+                <th>Default Value</th>
+                <th>Primary Key</th>
+              </tr>
+            </thead>
+            <tbody>
+              {table.columns.map((col, index) => (
+                <tr key={index}>
+                  <td>{col[1]}</td><td>{col[2]}</td><td>{col[3] ? 'Yes' : 'No'}</td><td>{col[4] || ''}</td><td>{col[5] ? 'Yes' : 'No'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       ))}
     </div>

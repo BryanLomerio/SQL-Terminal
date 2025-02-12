@@ -5,6 +5,7 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
 .container {
   max-width: 800px;
   margin: 0 auto;
@@ -33,13 +34,13 @@ h1 {
   width: 30%;
   padding: 10px 0;
   font-size: 16px;
-  margin: 10px auto; 
+  margin: 10px auto;
   cursor: pointer;
   background-color: #333;
   border: none;
   color: #eee;
   transition: background-color 0.3s ease;
-  text-align: center; 
+  text-align: center;
 }
 
 
@@ -51,7 +52,8 @@ h1 {
   margin-bottom: 20px;
   overflow-x: auto;
 }
-p{
+
+p {
   justify-content: center;
   text-align: center;
 }
@@ -96,39 +98,44 @@ td {
   .container {
     padding: 10px;
   }
+
   h1 {
     margin-top: 20px;
     font-size: 15px;
     margin-bottom: 10px;
   }
+
   .query-input,
   .execute-button {
     font-size: 14px;
     padding: 8px;
   }
+
   .execute-button {
     display: block;
     width: 70%;
     padding: 10px 0;
     font-size: 16px;
-    margin: 10px auto; 
+    margin: 10px auto;
     cursor: pointer;
     background-color: #333;
     border: none;
     color: #eee;
     transition: background-color 0.3s ease;
-    text-align: center; 
+    text-align: center;
   }
-  
+
   .instructions pre {
     font-size: 12px;
     padding: 8px;
   }
+
   th,
   td {
     padding: 4px;
     font-size: 0.60rem;
   }
+
   .result table {
     font-size: 12px;
     width: 100%;
@@ -206,7 +213,7 @@ td {
     gap: 20px;
     justify-content: center;
     padding: 15px;
-    
+
   }
 
   .schema-table {
@@ -216,17 +223,18 @@ td {
   }
 
   .schema-table h3 {
-    font-size: .8em;
+    font-size: .6em;
     text-overflow: none;
   }
+
   .schema-column {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
-    font-size: 0.8rem;
-    
+    font-size: 0.6rem;
+
   }
 
   .column-type {
@@ -236,4 +244,12 @@ td {
   .foreign-key {
     font-size: 0.3em;
   }
+}
+
+.notification {
+  margin: 10px 0;
+  color: #3c763d;
+  border-radius: 4px;
+  font-weight: bold;
+  text-align: center;
 }

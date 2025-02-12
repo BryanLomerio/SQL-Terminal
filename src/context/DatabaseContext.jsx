@@ -6,7 +6,7 @@ export const DatabaseContext = createContext();
 export const DatabaseProvider = ({ children }) => {
   const [db, setDb] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [tableCreated, setTableCreated] = useState(false);  
+  const [tableCreated, setTableCreated] = useState(false);
 
   const uint8ArrayToBase64 = (u8Arr) => {
     const CHUNK_SIZE = 0x8000;
@@ -45,81 +45,86 @@ export const DatabaseProvider = ({ children }) => {
           // Create data
           database = new SQL.Database();
           const defaultSchema = `
-            -- departments table.
+            -- Departments table (MySQL‑style)
             CREATE TABLE IF NOT EXISTS departments (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                location TEXT
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name VARCHAR(255) NOT NULL,
+              location VARCHAR(255) DEFAULT NULL,
+              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
-            
-            -- employees table (salary column added).
+
+            -- Employees table
             CREATE TABLE IF NOT EXISTS employees (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                first_name TEXT NOT NULL,
-                last_name TEXT NOT NULL,
-                department_id INTEGER,
-                position TEXT,
-                salary REAL,
-                FOREIGN KEY(department_id) REFERENCES departments(id)
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              first_name VARCHAR(255) NOT NULL,
+              last_name VARCHAR(255) NOT NULL,
+              department_id INT DEFAULT NULL,
+              position VARCHAR(255) DEFAULT NULL,
+              salary DECIMAL(10,2) NOT NULL,
+              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              FOREIGN KEY(department_id) REFERENCES departments(id)
             );
-            
-            -- projects table.
+
+            -- Projects table
             CREATE TABLE IF NOT EXISTS projects (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                start_date TEXT,
-                end_date TEXT
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name VARCHAR(255) NOT NULL,
+              start_date DATE DEFAULT NULL,
+              end_date DATE DEFAULT NULL,
+              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
-            
-            -- join table for employees and projects.
+
+            -- Employee_Projects join table
             CREATE TABLE IF NOT EXISTS employee_projects (
-                employee_id INTEGER,
-                project_id INTEGER,
-                PRIMARY KEY (employee_id, project_id),
-                FOREIGN KEY(employee_id) REFERENCES employees(id),
-                FOREIGN KEY(project_id) REFERENCES projects(id)
+              employee_id INT NOT NULL,
+              project_id INT NOT NULL,
+              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              PRIMARY KEY (employee_id, project_id),
+              FOREIGN KEY(employee_id) REFERENCES employees(id),
+              FOREIGN KEY(project_id) REFERENCES projects(id)
             );
-            
-            -- addresses table.
+
+            -- Addresses table
             CREATE TABLE IF NOT EXISTS addresses (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                employee_id INTEGER,
-                address_line1 TEXT,
-                address_line2 TEXT,
-                city TEXT,
-                state TEXT,
-                zip TEXT,
-                FOREIGN KEY(employee_id) REFERENCES employees(id)
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              employee_id INT NOT NULL,
+              address_line1 VARCHAR(255) NOT NULL,
+              address_line2 VARCHAR(255) DEFAULT NULL,
+              city VARCHAR(100) NOT NULL,
+              state VARCHAR(100) NOT NULL,
+              zip VARCHAR(20) NOT NULL,
+              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              FOREIGN KEY(employee_id) REFERENCES employees(id)
             );
-            
-            -- default data for departments.
+
+            -- Sample Data Inserts
             INSERT INTO departments (name, location) VALUES ('Engineering', 'Building A');
             INSERT INTO departments (name, location) VALUES ('Human Resources', 'Building B');
             INSERT INTO departments (name, location) VALUES ('Marketing', 'Building C');
-            
-            -- default data for employees (including salary).
+
             INSERT INTO employees (first_name, last_name, department_id, position, salary)
-              VALUES ('Alice', 'Smith', 1, 'Software Engineer', 85000);
+              VALUES ('Alice', 'Smith', 1, 'Software Engineer', 85000.00);
             INSERT INTO employees (first_name, last_name, department_id, position, salary)
-              VALUES ('Bob', 'Johnson', 1, 'DevOps Engineer', 90000);
+              VALUES ('Bob', 'Johnson', 1, 'DevOps Engineer', 90000.00);
             INSERT INTO employees (first_name, last_name, department_id, position, salary)
-              VALUES ('Charlie', 'Williams', 2, 'HR Manager', 75000);
+              VALUES ('Charlie', 'Williams', 2, 'HR Manager', 75000.00);
             INSERT INTO employees (first_name, last_name, department_id, position, salary)
-              VALUES ('Diana', 'Brown', 3, 'Marketing Specialist', 70000);
-            
-            -- default data for projects.
+              VALUES ('Diana', 'Brown', 3, 'Marketing Specialist', 70000.00);
+
             INSERT INTO projects (name, start_date, end_date)
               VALUES ('Project Apollo', '2024-01-01', '2024-06-30');
             INSERT INTO projects (name, start_date, end_date)
               VALUES ('Project Zephyr', '2024-03-01', '2024-12-31');
-            
-            -- Associate employees with projects.
+
             INSERT INTO employee_projects (employee_id, project_id) VALUES (1, 1);
             INSERT INTO employee_projects (employee_id, project_id) VALUES (2, 1);
             INSERT INTO employee_projects (employee_id, project_id) VALUES (1, 2);
             INSERT INTO employee_projects (employee_id, project_id) VALUES (4, 2);
-            
-            -- default data for addresses.
+
             INSERT INTO addresses (employee_id, address_line1, address_line2, city, state, zip)
               VALUES (1, '123 Main St', 'Apt 4', 'New York', 'NY', '10001');
             INSERT INTO addresses (employee_id, address_line1, address_line2, city, state, zip)
@@ -129,10 +134,10 @@ export const DatabaseProvider = ({ children }) => {
             INSERT INTO addresses (employee_id, address_line1, address_line2, city, state, zip)
               VALUES (4, '321 Pine St', '', 'Seattle', 'WA', '98101');
           `;
+
           database.run(defaultSchema);
           console.log('Created new database with default schema and sample data.');
 
-          // Mark table as created and save to localStorage
           setTableCreated(true);
           const data = database.export();
           localStorage.setItem('employeeDb', uint8ArrayToBase64(data));
@@ -152,7 +157,6 @@ export const DatabaseProvider = ({ children }) => {
     }
   };
 
-  // Add a new employee
   const addEmployee = (firstName, lastName, departmentId, position, salary) => {
     if (db) {
       const stmt = db.prepare(
@@ -166,12 +170,9 @@ export const DatabaseProvider = ({ children }) => {
     }
   };
 
-  // Update employee salary
   const updateEmployeeSalary = (employeeId, newSalary) => {
     if (db) {
-      const stmt = db.prepare(
-        "UPDATE employees SET salary = ? WHERE id = ?"
-      );
+      const stmt = db.prepare("UPDATE employees SET salary = ? WHERE id = ?");
       stmt.run([newSalary, employeeId]);
       stmt.free();
       updateDatabaseStorage();
@@ -181,7 +182,14 @@ export const DatabaseProvider = ({ children }) => {
 
   return (
     <DatabaseContext.Provider
-      value={{ db, loading, tableCreated, updateDatabaseStorage, addEmployee, updateEmployeeSalary }}
+      value={{
+        db,
+        loading,
+        tableCreated,
+        updateDatabaseStorage,
+        addEmployee,
+        updateEmployeeSalary,
+      }}
     >
       {children}
     </DatabaseContext.Provider>
