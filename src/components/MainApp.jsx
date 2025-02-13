@@ -3,6 +3,7 @@ import { DatabaseContext } from '../context/DatabaseContext';
 import SqlEditor from './SqlEditor';
 import SchemaDiagram from './SchemaDiagram';
 import ResultsDisplay from './ResultDisplay';
+import SampleProblems from '../problems/SampleProblems';
 
 function MainApp() {
     const { db, loading } = useContext(DatabaseContext);
@@ -96,9 +97,11 @@ function MainApp() {
 
     return (
         <div className="container">
+            {/* Hamburger Menu */}
             <div
                 style={{
                     position: 'fixed',
+                    marginTop: '10px',
                     top: '10px',
                     right: '10px',
                     zIndex: 1100,
@@ -122,7 +125,6 @@ function MainApp() {
                     <div
                         className="hamburger-menu-links"
                         style={{
-                            backgroundColor: '#121212',
                             padding: '10px',
                             borderRadius: '6px',
                             marginTop: '5px'
@@ -164,6 +166,22 @@ function MainApp() {
                         >
                             GitHub
                         </a>
+                        <a
+                            href="#"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setView("problems");
+                                setMenuOpen(false);
+                            }}
+                            style={{
+                                color: 'white',
+                                textDecoration: 'underline',
+                                display: 'block',
+                                margin: '5px 0'
+                            }}
+                        >
+                            Problems
+                        </a>
                     </div>
                 )}
             </div>
@@ -172,26 +190,42 @@ function MainApp() {
                 THE JOURNEY DOESN’T END, <br />
                 KEEP LEVELING UP!
             </h1>
+
             {loading ? (
                 <p>Loading database...</p>
             ) : (
                 <>
-                    <SqlEditor query={query} setQuery={setQuery} />
-                    <button className="execute-button" onClick={executeQuery}>
-                        Run Query
-                    </button>
-                    <button className="execute-button" onClick={toggleTablesSchema}>
-                        {view === 'schema' ? 'Hide Schema' : 'Show Tables & Schema'}
-                    </button>
-                    {message && <div className="notification">{message}</div>}
-                    {view === 'query' ? (
-                        <ResultsDisplay results={results} tableTitle={tableTitle} />
-                    ) : (
-                        <SchemaDiagram />
+                    {view === 'query' && (
+                        <>
+                            <SqlEditor query={query} setQuery={setQuery} />
+                            <button className="execute-button" onClick={executeQuery}>
+                                Run Query
+                            </button>
+                            <button className="execute-button" onClick={toggleTablesSchema}>
+                                {view === 'schema' ? 'Hide Schema' : 'Show Tables & Schema'}
+                            </button>
+                            {message && <div className="notification">{message}</div>}
+                            <ResultsDisplay results={results} tableTitle={tableTitle} />
+                        </>
+                    )}
+                    {view === 'schema' && (
+                        <>
+                            <SchemaDiagram />
+                            <button className="execute-button" onClick={() => setView('query')}>
+                                Back to Query
+                            </button>
+                        </>
+                    )}
+                    {view === 'problems' && (
+                        <>
+                            <SampleProblems />
+                            <button className="execute-button" onClick={() => setView('query')}>
+                                Back to Query
+                            </button>
+                        </>
                     )}
                 </>
             )}
-
         </div>
     );
 }
