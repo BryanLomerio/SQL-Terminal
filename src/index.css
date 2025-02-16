@@ -7,22 +7,22 @@ body {
 }
 
 .container {
-  max-width: 800px;
+  max-width: 50rem;
   margin: 0 auto;
-  padding: 20px;
+  padding: 1.25rem;
 }
 
 h1 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
   color: #fff;
 }
 
 .query-input {
   width: 100%;
-  font-size: 16px;
-  padding: 10px;
-  border: 1px solid #444;
+  font-size: 1rem;
+  padding: 0.625rem;
+  border: 0.0625rem solid #444;
   resize: vertical;
   box-sizing: border-box;
   background-color: #1e1e1e;
@@ -32,9 +32,9 @@ h1 {
 .execute-button {
   display: block;
   width: 30%;
-  padding: 10px 0;
-  font-size: 16px;
-  margin: 10px auto;
+  padding: 0.625rem 0;
+  font-size: 1rem;
+  margin: 0.625rem auto;
   cursor: pointer;
   background-color: #333;
   border: none;
@@ -45,11 +45,11 @@ h1 {
 
 
 .results {
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
 
 .result {
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
   overflow-x: auto;
 }
 
@@ -61,14 +61,14 @@ p {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
   background-color: #1e1e1e;
 }
 
 th,
 td {
-  border: 1px solid #444;
-  padding: 8px;
+  border: 0.0625rem solid #444;
+  padding: 0.5rem;
   text-align: left;
 }
 
@@ -88,35 +88,35 @@ td {
 
 .instructions pre {
   background-color: #1e1e1e;
-  padding: 10px;
-  border: 1px solid #444;
+  padding: 0.625rem;
+  border: 0.0625rem solid #444;
   overflow-x: auto;
   color: #eee;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 37.5rem) {
   .container {
-    padding: 10px;
+    padding: 0.625rem;
   }
 
   h1 {
-    margin-top: 20px;
-    font-size: 15px;
-    margin-bottom: 10px;
+    margin-top: 1.25rem;
+    font-size: 0.9375rem;
+    margin-bottom: 0.625rem;
   }
 
   .query-input,
   .execute-button {
-    font-size: 14px;
-    padding: 8px;
+    font-size: 0.875rem;
+    padding: 0.5rem;
   }
 
   .execute-button {
     display: block;
     width: 70%;
-    padding: 10px 0;
-    font-size: 16px;
-    margin: 10px auto;
+    padding: 0.625rem 0;
+    font-size: 1rem;
+    margin: 0.625rem auto;
     cursor: pointer;
     background-color: #333;
     border: none;
@@ -126,18 +126,18 @@ td {
   }
 
   .instructions pre {
-    font-size: 12px;
-    padding: 8px;
+    font-size: 0.75rem;
+    padding: 0.5rem;
   }
 
   th,
   td {
-    padding: 4px;
+    padding: 0.25rem;
     font-size: 0.60rem;
   }
 
   .result table {
-    font-size: 12px;
+    font-size: 0.75rem;
     width: 100%;
   }
 }
@@ -146,29 +146,29 @@ td {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
-  padding: 20px;
+  gap: 1.25rem;
+  padding: 1.25rem;
   position: relative;
 }
 
 .schema-table {
   background-color: #fff;
-  border: 2px solid #333;
-  border-radius: 5px;
-  padding: 10px;
-  min-width: 220px;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  border: 0.125rem solid #333;
+  border-radius: 0.3125rem;
+  padding: 0.625rem;
+  min-width: 13.75rem;
+  box-shadow: 0.125rem 0.125rem 0.5rem rgba(0, 0, 0, 0.2);
   position: relative;
   color: black;
 }
 
 .schema-table h3 {
   margin: 0;
-  padding: 8px;
+  padding: 0.5rem;
   text-align: center;
   background-color: #333;
   color: #fff;
-  border-radius: 3px;
+  border-radius: 0.1875rem;
 }
 
 .schema-table ul {
@@ -178,8 +178,8 @@ td {
 }
 
 .schema-column {
-  padding: 4px 8px;
-  border-bottom: 1px dashed #ccc;
+  padding: 0.25rem 0.5rem;
+  border-bottom: 0.0625rem dashed #ccc;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -203,16 +203,16 @@ td {
 .foreign-key {
   font-size: 0.85em;
   color: #007bff;
-  margin-left: 5px;
+  margin-left: 0.3125rem;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 37.5rem) {
   .schema-diagram {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 1.25rem;
     justify-content: center;
-    padding: 15px;
+    padding: 0.9375rem;
 
   }
 
@@ -232,7 +232,7 @@ td {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
     font-size: 0.6rem;
 
   }
@@ -247,9 +247,25 @@ td {
 }
 
 .notification {
-  margin: 10px 0;
+  margin: 0.625rem 0;
   color: #3c763d;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   font-weight: bold;
   text-align: center;
+}
+
+.token {
+  background: none !important;
+}
+
+.token::selection {
+  background: #1e1e1e !important;
+}
+
+.token.table-name {
+  color: #73bb4a; 
+}
+
+.token.column-name {
+  color: #8be9fd; 
 }
