@@ -59,10 +59,10 @@ function MainApp() {
         <div className="container">
             <HamburgerMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} setView={setView} />
             <BackButton visible={view !== 'query'} onClick={() => setView('query')} />
-            <h1>
+            <h4>
                 THE JOURNEY DOESN’T END, <br />
                 KEEP LEVELING UP!
-            </h1>
+            </h4>
             {loading ? (
                 <p>Loading database...</p>
             ) : (

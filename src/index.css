@@ -12,7 +12,7 @@ body {
   padding: 1.25rem;
 }
 
-h1 {
+h4 {
   text-align: center;
   margin-bottom: 1.25rem;
   color: #fff;
@@ -263,9 +263,9 @@ td {
 }
 
 .token.table-name {
-  color: #73bb4a; 
+  color: #73bb4a;
 }
 
 .token.column-name {
-  color: #8be9fd; 
+  color: #8be9fd;
 }
