@@ -245,7 +245,19 @@ export const DatabaseProvider = ({ children }) => {
   const updateDatabaseStorage = () => {
     if (db) {
       const data = db.export();
-      localStorage.setItem('employeeDb', uint8ArrayToBase64(data));
+      const base64Data = uint8ArrayToBase64(data);
+      try {
+        localStorage.setItem('employeeDb', base64Data);
+        // Log storage usage
+        const usage = new Blob([base64Data]).size;
+        console.log(`Storage usage: ${(usage / 1024 / 1024).toFixed(2)}MB`);
+      } catch (e) {
+        if (e.name === 'QuotaExceededError') {
+          console.error('localStorage quota exceeded');
+          setMessage("Error: Database too large for localStorage");
+        }
+        throw e;
+      }
     }
   };
 

@@ -9,7 +9,7 @@ import BackButton from './BackButton';
 import { convertMySQLtoSQLite } from '../utils/convertQuery';
 
 function MainApp() {
-    const { db, loading } = useContext(DatabaseContext);
+    const { db, loading, updateDatabaseStorage } = useContext(DatabaseContext);
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [tableTitle, setTableTitle] = useState('');
@@ -33,51 +33,83 @@ function MainApp() {
                 const tableMatch = convertedQuery.match(/FROM\s+(\w+)/i);
                 if (tableMatch) {
                     const tableName = tableMatch[1];
-                    // Check if table exists
                     const tableExists = db.exec(`SELECT name FROM sqlite_master WHERE type='table' AND name='${tableName}'`);
 
                     if (tableExists.length > 0) {
                         const tableInfo = db.exec(`PRAGMA table_info(${tableName})`);
                         if (tableInfo.length > 0) {
-                            columns = tableInfo[0].values.map(col => col[1]); // Get column names
+                            columns = tableInfo[0].values.map(col => col[1]);
                         }
                     }
                 }
             }
 
             const result = db.exec(convertedQuery);
+            const upperQuery = convertedQuery.trim().toUpperCase();
 
-            if (result.length === 0 && columns.length > 0) {
-                setResults([{
-                    columns: columns,
-                    values: []
-                }]);
-                setMessage("");
-            } else if (result.length === 0) {
-                setResults([]);
-                setMessage("Table does not exist.");
-            } else {
-                setResults(result);
-                setMessage("");
+            if (
+                upperQuery.startsWith("CREATE TABLE") ||
+                upperQuery.startsWith("DROP TABLE") ||
+                upperQuery.startsWith("ALTER TABLE") ||
+                upperQuery.startsWith("INSERT") ||
+                upperQuery.startsWith("UPDATE") ||
+                upperQuery.startsWith("DELETE") ||
+                upperQuery.startsWith("TRUNCATE")
+            ) {
+                updateDatabaseStorage();
             }
 
-            const upperQuery = convertedQuery.trim().toUpperCase();
+
             if (upperQuery.startsWith("CREATE TABLE")) {
                 setMessage("Table created successfully.");
+                setResults([]);
             } else if (upperQuery.startsWith("DROP TABLE")) {
                 setMessage("Table dropped successfully.");
+                setResults([]);
             } else if (upperQuery.startsWith("ALTER TABLE")) {
                 setMessage("Table altered successfully.");
+                setResults([]);
             } else if (upperQuery.startsWith("DELETE FROM")) {
                 setMessage("Records deleted successfully.");
+                if (columns.length > 0) {
+                    setResults([{
+                        columns: columns,
+                        values: []
+                    }]);
+                }
             } else if (upperQuery.startsWith("TRUNCATE TABLE")) {
                 setMessage("Table truncated successfully.");
+                if (columns.length > 0) {
+                    setResults([{
+                        columns: columns,
+                        values: []
+                    }]);
+                }
             } else if (
                 upperQuery.startsWith("INSERT") ||
                 upperQuery.startsWith("UPDATE")
             ) {
                 setMessage("Operation completed successfully.");
+                setResults(result.length > 0 ? result : []);
+            } else {
+              
+                if (result.length === 0 && columns.length > 0) {
+                    setResults([{
+                        columns: columns,
+                        values: []
+                    }]);
+                    setMessage("");
+                } else if (result.length === 0) {
+                    setResults([]);
+                    if (!upperQuery.startsWith("CREATE TABLE")) {
+                        setMessage("Table does not exist.");
+                    }
+                } else {
+                    setResults(result);
+                    setMessage("");
+                }
             }
+
         } catch (error) {
             console.error("Query execution error:", error);
             setMessage("Error executing query: " + error.message);
