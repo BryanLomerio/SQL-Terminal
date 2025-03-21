@@ -70,7 +70,6 @@ const SqlEditor = ({ query, setQuery }) => {
     }
   };
 
-  // Function to copy the current query text to the clipboard
   const copyQuery = () => {
     navigator.clipboard.writeText(query)
       .then(() => {
@@ -78,7 +77,7 @@ const SqlEditor = ({ query, setQuery }) => {
         setCopied(true);
         setTimeout(() => {
           setCopied(false);
-        }, 1000); // Auto hide after 1 second
+        }, 1000);
       })
       .catch((err) => {
         console.error('Failed to copy query:', err);

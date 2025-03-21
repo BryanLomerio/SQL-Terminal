@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 const ResultsDisplay = ({ results, tableTitle }) => {
   const [animation, setAnimation] = useState(false);
@@ -58,6 +59,16 @@ const ResultsDisplay = ({ results, tableTitle }) => {
       ))}
     </div>
   );
+};
+
+ResultsDisplay.propTypes = {
+  results: PropTypes.arrayOf(
+    PropTypes.shape({
+      columns: PropTypes.arrayOf(PropTypes.string).isRequired,
+      values: PropTypes.arrayOf(PropTypes.array).isRequired,
+    })
+  ).isRequired,
+  tableTitle: PropTypes.string,
 };
 
 export default ResultsDisplay;
