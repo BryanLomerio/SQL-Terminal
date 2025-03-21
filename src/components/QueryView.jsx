@@ -35,10 +35,32 @@ const QueryView = ({
 
   const trimmedQuery = query.trim().toUpperCase();
   const isCreateTable = trimmedQuery.startsWith("CREATE TABLE");
+  const isDropTable = trimmedQuery.startsWith("DROP TABLE");
+  const isAlterTable = trimmedQuery.startsWith("ALTER TABLE");
+  const isDeleteFrom = trimmedQuery.startsWith("DELETE FROM");
+  const isTruncateTable = trimmedQuery.startsWith("TRUNCATE TABLE");
 
-  const displayMessage = hasExecuted && isCreateTable && (!message || message === "")
-    ? "Table created successfully."
-    : message;
+  let displayMessage = message;
+
+  if (hasExecuted && (!message || message === "No results to display.")) {
+    if (isCreateTable) {
+      displayMessage = "Table created successfully.";
+    } else if (isDropTable) {
+      displayMessage = "Table dropped successfully.";
+    } else if (isAlterTable) {
+      displayMessage = "Table altered successfully.";
+    } else if (isDeleteFrom) {
+      displayMessage = "Records deleted successfully.";
+    } else if (isTruncateTable) {
+      displayMessage = "Table truncated successfully.";
+    }
+  }
+
+  const getNotificationClass = (msg) => {
+    if (msg.includes('Error')) return 'error';
+    if (msg.includes('successfully')) return 'success';
+    return '';
+  };
 
   return (
     <>
@@ -66,7 +88,7 @@ const QueryView = ({
       </div>
 
       {displayMessage && (
-        <div className={`notification ${displayMessage.includes('Error') ? 'error' : displayMessage.includes('successfully') ? 'success' : ''}`}>
+        <div className={`notification ${getNotificationClass(displayMessage)}`}>
           <span className="notification-icon">
             {displayMessage.includes('Error') ? (
               <svg width="16" height="16" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">

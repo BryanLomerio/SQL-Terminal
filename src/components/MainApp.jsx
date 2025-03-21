@@ -33,10 +33,17 @@ function MainApp() {
             const upperQuery = convertedQuery.trim().toUpperCase();
             if (upperQuery.startsWith("CREATE TABLE")) {
                 setMessage("Table created successfully.");
+            } else if (upperQuery.startsWith("DROP TABLE")) {
+                setMessage("Table dropped successfully.");
+            } else if (upperQuery.startsWith("ALTER TABLE")) {
+                setMessage("Table altered successfully.");
+            } else if (upperQuery.startsWith("DELETE FROM")) {
+                setMessage("Records deleted successfully.");
+            } else if (upperQuery.startsWith("TRUNCATE TABLE")) {
+                setMessage("Table truncated successfully.");
             } else if (
                 upperQuery.startsWith("INSERT") ||
-                upperQuery.startsWith("UPDATE") ||
-                upperQuery.startsWith("DELETE")
+                upperQuery.startsWith("UPDATE")
             ) {
                 setMessage("Operation completed successfully.");
             } else if (result.length === 0) {
@@ -46,7 +53,7 @@ function MainApp() {
             }
         } catch (error) {
             console.error("Query execution error:", error);
-            setMessage("Error executing query.");
+            setMessage("Error executing query: " + error.message);
         }
     };
 
