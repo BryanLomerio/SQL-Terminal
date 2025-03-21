@@ -5,8 +5,9 @@ import Prism from 'prismjs';
 import 'prismjs/components/prism-sql';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-tomorrow.css';
-import { Play, Database } from 'lucide-react';
+import { Play, Database, Copy } from 'lucide-react';
 import { Button } from './ui/button';
+import { TbDatabaseEdit } from "react-icons/tb";
 
 if (Prism.languages.sql) {
   Prism.languages.insertBefore('sql', 'keyword', {
@@ -67,14 +68,33 @@ const SqlEditor = ({ query, setQuery }) => {
       }, 0);
     }
   };
+// copy
+  const copyQuery = () => {
+    console.log('Copy clicked, query:', query);
+    navigator.clipboard.writeText(query)
+      .then(() => {
+        console.log('Query copied to clipboard!');
+      })
+      .catch((err) => {
+        console.error('Failed to copy query:', err);
+      });
+  };
+
 
   return (
     <div className="editor-container" ref={editorRef}>
-      <div className="editor-header">
-        <svg width="18" height="18" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M13.5 4.5H12.5V3.5C12.5 2.94772 12.0523 2.5 11.5 2.5H3.5C2.94772 2.5 2.5 2.94772 2.5 3.5V11.5C2.5 12.0523 2.94772 12.5 3.5 12.5H4.5V13.5C4.5 14.0523 4.94772 14.5 5.5 14.5H13.5C14.0523 14.5 14.5 14.0523 14.5 13.5V5.5C14.5 4.94772 14.0523 4.5 13.5 4.5ZM3.5 11.5V3.5H11.5V4.5H5.5C4.94772 4.5 4.5 4.94772 4.5 5.5V11.5H3.5ZM13.5 13.5H5.5V5.5H13.5V13.5Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
-        </svg>
-        <span className="editor-title">SQL Query Editor</span>
+      <div className="editor-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <TbDatabaseEdit/>
+          <span className="editor-title" style={{ marginLeft: '8px' }}>SQL Query Editor</span>
+        </div>
+
+        <Copy
+          size={18}
+          onClick={copyQuery}
+          style={{ cursor: 'pointer' }}
+          title="Copy query to clipboard"
+        />
       </div>
 
       <Editor
