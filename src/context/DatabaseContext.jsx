@@ -52,7 +52,7 @@ export const DatabaseProvider = ({ children }) => {
           // Create data
           database = new SQL.Database();
           const defaultSchema = `
-            -- Departments table
+            -- Departments table (Philippines-themed)
             CREATE TABLE IF NOT EXISTS departments (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               name VARCHAR(255) NOT NULL,
@@ -61,7 +61,7 @@ export const DatabaseProvider = ({ children }) => {
               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
 
-            -- Employees table
+            -- Employees table (Filipino names)
             CREATE TABLE IF NOT EXISTS employees (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               first_name VARCHAR(255) NOT NULL,
@@ -94,7 +94,7 @@ export const DatabaseProvider = ({ children }) => {
               FOREIGN KEY(project_id) REFERENCES projects(id)
             );
 
-            -- Addresses table
+            -- Addresses table (Philippines addresses)
             CREATE TABLE IF NOT EXISTS addresses (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               employee_id INT NOT NULL,
@@ -108,38 +108,124 @@ export const DatabaseProvider = ({ children }) => {
               FOREIGN KEY(employee_id) REFERENCES employees(id)
             );
 
+            -- New Tables for Philippines data
+
+            -- Regions table
+            CREATE TABLE IF NOT EXISTS regions (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name VARCHAR(255) NOT NULL,
+              description TEXT DEFAULT NULL,
+              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+
+            -- Provinces table
+            CREATE TABLE IF NOT EXISTS provinces (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              region_id INT NOT NULL,
+              name VARCHAR(255) NOT NULL,
+              capital VARCHAR(255) DEFAULT NULL,
+              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              FOREIGN KEY(region_id) REFERENCES regions(id)
+            );
+
+            -- Municipalities table
+            CREATE TABLE IF NOT EXISTS municipalities (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              province_id INT NOT NULL,
+              name VARCHAR(255) NOT NULL,
+              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              FOREIGN KEY(province_id) REFERENCES provinces(id)
+            );
+
+            -- Barangays table
+            CREATE TABLE IF NOT EXISTS barangays (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              municipality_id INT NOT NULL,
+              name VARCHAR(255) NOT NULL,
+              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              FOREIGN KEY(municipality_id) REFERENCES municipalities(id)
+            );
+
+            -- Offices table
+            CREATE TABLE IF NOT EXISTS offices (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name VARCHAR(255) NOT NULL,
+              location VARCHAR(255) DEFAULT NULL,
+              department_id INT DEFAULT NULL,
+              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              FOREIGN KEY(department_id) REFERENCES departments(id)
+            );
+
             -- Sample Data Inserts
-            INSERT INTO departments (name, location) VALUES ('Engineering', 'Building A');
-            INSERT INTO departments (name, location) VALUES ('Human Resources', 'Building B');
-            INSERT INTO departments (name, location) VALUES ('Marketing', 'Building C');
 
-            INSERT INTO employees (first_name, last_name, department_id, position, salary)
-              VALUES ('Lee', 'Min-ho', 1, 'Software Engineer', 85000.00);
-            INSERT INTO employees (first_name, last_name, department_id, position, salary)
-              VALUES ('Hyun', 'Bin', 1, 'DevOps Engineer', 90000.00);
-            INSERT INTO employees (first_name, last_name, department_id, position, salary)
-              VALUES ('Gong', 'Yoo', 2, 'HR Manager', 75000.00);
-            INSERT INTO employees (first_name, last_name, department_id, position, salary)
-              VALUES ('Song', 'Joong-ki', 3, 'Marketing Specialist', 70000.00);
+            -- Departments
+            INSERT INTO departments (name, location) VALUES ('IT', 'Makati');
+            INSERT INTO departments (name, location) VALUES ('Human Resources', 'Mandaluyong');
+            INSERT INTO departments (name, location) VALUES ('Sales', 'Quezon City');
 
+            -- Employees (using Filipino names)
+            INSERT INTO employees (first_name, last_name, department_id, position, salary)
+              VALUES ('Juan', 'Dela Cruz', 1, 'Software Engineer', 85000.00);
+            INSERT INTO employees (first_name, last_name, department_id, position, salary)
+              VALUES ('Maria', 'Santos', 1, 'DevOps Engineer', 90000.00);
+            INSERT INTO employees (first_name, last_name, department_id, position, salary)
+              VALUES ('Jose', 'Reyes', 2, 'HR Manager', 75000.00);
+            INSERT INTO employees (first_name, last_name, department_id, position, salary)
+              VALUES ('Ana', 'Garcia', 3, 'Sales Specialist', 70000.00);
+
+            -- Projects
             INSERT INTO projects (name, start_date, end_date)
-              VALUES ('Project Apollo', '2024-01-01', '2024-06-30');
+              VALUES ('Project Bayanihan', '2024-01-01', '2024-06-30');
             INSERT INTO projects (name, start_date, end_date)
-              VALUES ('Project Zephyr', '2024-03-01', '2024-12-31');
+              VALUES ('Project Kapit', '2024-03-01', '2024-12-31');
 
+            -- Employee_Projects
             INSERT INTO employee_projects (employee_id, project_id) VALUES (1, 1);
             INSERT INTO employee_projects (employee_id, project_id) VALUES (2, 1);
             INSERT INTO employee_projects (employee_id, project_id) VALUES (1, 2);
             INSERT INTO employee_projects (employee_id, project_id) VALUES (4, 2);
 
+            -- Addresses (Philippines addresses)
             INSERT INTO addresses (employee_id, address_line1, address_line2, city, state, zip)
-              VALUES (1, '123 Main St', 'Apt 4', 'New York', 'NY', '10001');
+              VALUES (1, '123 Mabini St', 'Apt 4', 'Manila', 'Metro Manila', '1001');
             INSERT INTO addresses (employee_id, address_line1, address_line2, city, state, zip)
-              VALUES (2, '456 Elm St', '', 'San Francisco', 'CA', '94101');
+              VALUES (2, '456 Rizal St', '', 'Quezon City', 'Metro Manila', '1002');
             INSERT INTO addresses (employee_id, address_line1, address_line2, city, state, zip)
-              VALUES (3, '789 Oak St', 'Suite 5', 'Chicago', 'IL', '60601');
+              VALUES (3, '789 Bonifacio St', 'Suite 5', 'Cebu City', 'Cebu', '6000');
             INSERT INTO addresses (employee_id, address_line1, address_line2, city, state, zip)
-              VALUES (4, '321 Pine St', '', 'Seattle', 'WA', '98101');
+              VALUES (4, '321 EDSA', '', 'Davao City', 'Davao', '8000');
+
+            -- Regions
+            INSERT INTO regions (name, description) VALUES ('Luzon', 'Main island group of the Philippines.');
+            INSERT INTO regions (name, description) VALUES ('Visayas', 'Central islands of the Philippines.');
+            INSERT INTO regions (name, description) VALUES ('Mindanao', 'Southern island group of the Philippines.');
+
+            -- Provinces (sample)
+            INSERT INTO provinces (region_id, name, capital) VALUES (1, 'Pampanga', 'San Fernando');
+            INSERT INTO provinces (region_id, name, capital) VALUES (1, 'Bulacan', 'Malolos');
+            INSERT INTO provinces (region_id, name, capital) VALUES (2, 'Cebu', 'Cebu City');
+            INSERT INTO provinces (region_id, name, capital) VALUES (3, 'Davao del Sur', 'Digos');
+
+            -- Municipalities (sample)
+            INSERT INTO municipalities (province_id, name) VALUES (1, 'Angeles City');
+            INSERT INTO municipalities (province_id, name) VALUES (2, 'Meycauayan');
+            INSERT INTO municipalities (province_id, name) VALUES (3, 'Lapu-Lapu City');
+            INSERT INTO municipalities (province_id, name) VALUES (4, 'Bansalan');
+
+            -- Barangays (sample)
+            INSERT INTO barangays (municipality_id, name) VALUES (1, 'Balibago');
+            INSERT INTO barangays (municipality_id, name) VALUES (2, 'Sto. Niño');
+            INSERT INTO barangays (municipality_id, name) VALUES (3, 'Maribago');
+            INSERT INTO barangays (municipality_id, name) VALUES (4, 'Poblacion');
+
+            -- Offices (sample)
+            INSERT INTO offices (name, location, department_id) VALUES ('Main Office', 'Makati', 1);
+            INSERT INTO offices (name, location, department_id) VALUES ('Regional Office', 'Quezon City', 2);
           `;
 
           database.run(defaultSchema);
