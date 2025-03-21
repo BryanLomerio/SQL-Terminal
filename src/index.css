@@ -391,7 +391,6 @@ tbody tr:last-child td {
   font-size: 0.75rem;
 }
 
-/* Problems Container Styles - Enhanced */
 .problems-container {
   margin-top: 2rem;
   animation: slideInUp 0.5s ease-out;
