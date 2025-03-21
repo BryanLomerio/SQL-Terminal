@@ -27,8 +27,39 @@ function MainApp() {
             const convertedQuery = convertMySQLtoSQLite(query);
             const match = convertedQuery.match(/FROM\s+(\w+)/i);
             setTableTitle(match ? match[1] : '');
+
+            let columns = [];
+            if (convertedQuery.trim().toUpperCase().startsWith('SELECT')) {
+                const tableMatch = convertedQuery.match(/FROM\s+(\w+)/i);
+                if (tableMatch) {
+                    const tableName = tableMatch[1];
+                    // Check if table exists
+                    const tableExists = db.exec(`SELECT name FROM sqlite_master WHERE type='table' AND name='${tableName}'`);
+
+                    if (tableExists.length > 0) {
+                        const tableInfo = db.exec(`PRAGMA table_info(${tableName})`);
+                        if (tableInfo.length > 0) {
+                            columns = tableInfo[0].values.map(col => col[1]); // Get column names
+                        }
+                    }
+                }
+            }
+
             const result = db.exec(convertedQuery);
-            setResults(result);
+
+            if (result.length === 0 && columns.length > 0) {
+                setResults([{
+                    columns: columns,
+                    values: []
+                }]);
+                setMessage("");
+            } else if (result.length === 0) {
+                setResults([]);
+                setMessage("Table does not exist.");
+            } else {
+                setResults(result);
+                setMessage("");
+            }
 
             const upperQuery = convertedQuery.trim().toUpperCase();
             if (upperQuery.startsWith("CREATE TABLE")) {
@@ -46,10 +77,6 @@ function MainApp() {
                 upperQuery.startsWith("UPDATE")
             ) {
                 setMessage("Operation completed successfully.");
-            } else if (result.length === 0) {
-                setMessage("No results to display.");
-            } else {
-                setMessage("");
             }
         } catch (error) {
             console.error("Query execution error:", error);

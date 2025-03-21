@@ -10,7 +10,7 @@ const ResultsDisplay = ({ results, tableTitle }) => {
     return () => clearTimeout(timer);
   }, [results]);
 
-  if (!results || results.length === 0) {
+  if (!results) {
     return null;
   }
 
@@ -43,15 +43,31 @@ const ResultsDisplay = ({ results, tableTitle }) => {
                 </tr>
               </thead>
               <tbody>
-                {result.values.map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {row.map((cell, cellIndex) => (
-                      <td key={cellIndex}>
-                        {cell === null ? <span style={{ color: 'rgba(255,255,255,0.3)' }}>NULL</span> : cell}
-                      </td>
-                    ))}
+                {result.values.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={result.columns.length}
+                      style={{
+                        textAlign: 'center',
+                        padding: '2rem',
+                        color: 'rgba(255,255,255,0.5)',
+                        fontStyle: 'italic'
+                      }}
+                    >
+                      No data available
+                    </td>
                   </tr>
-                ))}
+                ) : (
+                  result.values.map((row, rowIndex) => (
+                    <tr key={rowIndex}>
+                      {row.map((cell, cellIndex) => (
+                        <td key={cellIndex}>
+                          {cell === null ? <span style={{ color: 'rgba(255,255,255,0.3)' }}>NULL</span> : cell}
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

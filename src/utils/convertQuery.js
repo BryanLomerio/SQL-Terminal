@@ -79,6 +79,14 @@ export const convertMySQLtoSQLite = (query) => {
 
   query = query.replace(/CAST\s*\(([^)]+)\s+AS\s+(CHAR|VARCHAR)\)/gi, 'CAST($1 AS TEXT)');
   query = query.replace(/CAST\s*\(([^)]+)\s+AS\s+(\w+)\)/gi, 'CAST($1 AS $2)');
+  query = query.replace(/^\s*TRUNCATE\s+TABLE\s+(\w+)\s*;?/i, "DELETE FROM $1;");
+  if (query.toUpperCase().startsWith("CREATE TRIGGER")) {
+    query = query.replace(/DELIMITER\s+\S+/gi, "");
+  }
+
+  if (query.toUpperCase().startsWith("DROP TRIGGER")) {
+    query = query.replace(/IF\s+EXISTS/gi, "IF EXISTS");
+  }
 
   if (query.toUpperCase().startsWith("DESCRIBE ")) {
     const parts = query.split(/\s+/);
@@ -162,7 +170,6 @@ export const convertMySQLtoSQLite = (query) => {
 
     console.log("Created sample tables.");
 
-    // MySQL query example
     const mysqlQuery = `
             WITH employee_project_summary AS (
                 SELECT
