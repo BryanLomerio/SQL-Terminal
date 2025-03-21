@@ -24,7 +24,7 @@ const QueryView = ({ query, setQuery, executeQuery, toggleTablesSchema, message,
             <div className="button-group">
                 <Button
                     variant="primary"
-                    className="button button-primary"
+                    className="button bg-[#8315DB]"
                     onClick={executeQuery}
                     style={{ cursor: 'pointer' }}
                 >
