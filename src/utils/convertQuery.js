@@ -1,4 +1,4 @@
-import initSqlJs from "sql.js";
+import initSqlJs from 'sql.js';
 
 export const convertMySQLtoSQLite = (query) => {
     query = query.trim();
@@ -104,93 +104,97 @@ export const convertMySQLtoSQLite = (query) => {
 };
 
 (async () => {
-    const SQL = await initSqlJs({
-        locateFile: (file) => `https://sql.js.org/dist/${file}`
-    });
-
-    const db = new SQL.Database();
-
-    db.run("PRAGMA foreign_keys = ON;");
-
-    db.run(`CREATE TABLE IF NOT EXISTS employees (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        first_name TEXT,
-        last_name TEXT,
-        department_id INTEGER,
-        position TEXT,
-        salary INTEGER
-    );`);
-
-    db.run(`CREATE TABLE IF NOT EXISTS departments (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        location TEXT
-    );`);
-
-    db.run(`CREATE TABLE IF NOT EXISTS projects (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        start_date TEXT,
-        end_date TEXT
-    );`);
-
-    db.run(`CREATE TABLE IF NOT EXISTS employee_projects (
-        employee_id INTEGER,
-        project_id INTEGER,
-        assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (employee_id) REFERENCES employees(id),
-        FOREIGN KEY (project_id) REFERENCES projects(id)
-    );`);
-
-    console.log("Created sample tables.");
-
-    // MySQL query example
-    const mysqlQuery = `
-        WITH employee_project_summary AS (
-            SELECT 
-                ep.employee_id,
-                JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'project_name', p.name,
-                        'start_date', p.start_date,
-                        'end_date', p.end_date
-                    )
-                ) AS projects
-            FROM employee_projects ep
-            JOIN projects p ON ep.project_id = p.id
-            GROUP BY ep.employee_id
-        )
-        SELECT 
-            e.id AS employee_id,
-            e.first_name,
-            e.last_name,
-            e.position,
-            e.salary,
-            d.name AS department_name,
-            d.location AS department_location,
-            eps.projects AS assigned_projects,
-            COUNT(e.id) OVER() AS total_employees,
-            GROUP_CONCAT(e.first_name ORDER BY e.salary DESC SEPARATOR ', ') AS salary_ranked_names
-        FROM employees e
-        INNER JOIN departments d ON e.department_id = d.id
-        LEFT JOIN employee_project_summary eps ON e.id = eps.employee_id
-        RIGHT JOIN projects p ON 1 = 1
-        GROUP BY e.id, d.id, eps.projects WITH ROLLUP
-        ORDER BY d.name ASC, e.salary DESC
-        LIMIT 10 OFFSET 5;
-    `;
-
-    console.log("Original MySQL Query:");
-    console.log(mysqlQuery);
-
-    const convertedQuery = convertMySQLtoSQLite(mysqlQuery);
-    console.log("Converted Query:");
-    console.log(convertedQuery);
-
     try {
-        const result = db.exec(convertedQuery);
-        console.log("Query Result:", result);
+        const SQL = await initSqlJs({
+            locateFile: file => `/${file}`
+        });
+
+        const db = new SQL.Database();
+
+        db.run("PRAGMA foreign_keys = ON;");
+
+        db.run(`CREATE TABLE IF NOT EXISTS employees (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            first_name TEXT,
+            last_name TEXT,
+            department_id INTEGER,
+            position TEXT,
+            salary INTEGER
+        );`);
+
+        db.run(`CREATE TABLE IF NOT EXISTS departments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            location TEXT
+        );`);
+
+        db.run(`CREATE TABLE IF NOT EXISTS projects (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            start_date TEXT,
+            end_date TEXT
+        );`);
+
+        db.run(`CREATE TABLE IF NOT EXISTS employee_projects (
+            employee_id INTEGER,
+            project_id INTEGER,
+            assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (employee_id) REFERENCES employees(id),
+            FOREIGN KEY (project_id) REFERENCES projects(id)
+        );`);
+
+        console.log("Created sample tables.");
+
+        // MySQL query example
+        const mysqlQuery = `
+            WITH employee_project_summary AS (
+                SELECT
+                    ep.employee_id,
+                    JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'project_name', p.name,
+                            'start_date', p.start_date,
+                            'end_date', p.end_date
+                        )
+                    ) AS projects
+                FROM employee_projects ep
+                JOIN projects p ON ep.project_id = p.id
+                GROUP BY ep.employee_id
+            )
+            SELECT
+                e.id AS employee_id,
+                e.first_name,
+                e.last_name,
+                e.position,
+                e.salary,
+                d.name AS department_name,
+                d.location AS department_location,
+                eps.projects AS assigned_projects,
+                COUNT(e.id) OVER() AS total_employees,
+                GROUP_CONCAT(e.first_name ORDER BY e.salary DESC SEPARATOR ', ') AS salary_ranked_names
+            FROM employees e
+            INNER JOIN departments d ON e.department_id = d.id
+            LEFT JOIN employee_project_summary eps ON e.id = eps.employee_id
+            RIGHT JOIN projects p ON 1 = 1
+            GROUP BY e.id, d.id, eps.projects WITH ROLLUP
+            ORDER BY d.name ASC, e.salary DESC
+            LIMIT 10 OFFSET 5;
+        `;
+
+        console.log("Original MySQL Query:");
+        console.log(mysqlQuery);
+
+        const convertedQuery = convertMySQLtoSQLite(mysqlQuery);
+        console.log("Converted Query:");
+        console.log(convertedQuery);
+
+        try {
+            const result = db.exec(convertedQuery);
+            console.log("Query Result:", result);
+        } catch (error) {
+            console.error("Query execution error:", error);
+        }
     } catch (error) {
-        console.error("Query execution error:", error);
+        console.error('Error initializing SQL.js:', error);
     }
 })();

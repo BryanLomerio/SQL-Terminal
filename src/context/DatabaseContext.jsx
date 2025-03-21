@@ -1,7 +1,10 @@
 import React, { createContext, useState, useEffect } from 'react';
 import initSqlJs from 'sql.js';
 
-export const DatabaseContext = createContext();
+export const DatabaseContext = createContext({
+  db: null,
+  loading: true,
+});
 
 export const DatabaseProvider = ({ children }) => {
   const [db, setDb] = useState(null);
@@ -33,8 +36,12 @@ export const DatabaseProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    initSqlJs({ locateFile: file => `https://sql.js.org/dist/${file}` })
-      .then(SQL => {
+    const initDatabase = async () => {
+      try {
+        const SQL = await initSqlJs({
+          locateFile: (file) => `https://sql.js.org/dist/${file}`,
+        });
+
         let database;
         const savedDb = localStorage.getItem('employeeDb');
         if (savedDb) {
@@ -45,7 +52,7 @@ export const DatabaseProvider = ({ children }) => {
           // Create data
           database = new SQL.Database();
           const defaultSchema = `
-            -- Departments table 
+            -- Departments table
             CREATE TABLE IF NOT EXISTS departments (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               name VARCHAR(255) NOT NULL,
@@ -106,14 +113,14 @@ export const DatabaseProvider = ({ children }) => {
             INSERT INTO departments (name, location) VALUES ('Human Resources', 'Building B');
             INSERT INTO departments (name, location) VALUES ('Marketing', 'Building C');
 
-           INSERT INTO employees (first_name, last_name, department_id, position, salary)
-            VALUES ('Lee', 'Min-ho', 1, 'Software Engineer', 85000.00);
-          INSERT INTO employees (first_name, last_name, department_id, position, salary)
-            VALUES ('Hyun', 'Bin', 1, 'DevOps Engineer', 90000.00);
-          INSERT INTO employees (first_name, last_name, department_id, position, salary)
-            VALUES ('Gong', 'Yoo', 2, 'HR Manager', 75000.00);
-          INSERT INTO employees (first_name, last_name, department_id, position, salary)
-            VALUES ('Song', 'Joong-ki', 3, 'Marketing Specialist', 70000.00);
+            INSERT INTO employees (first_name, last_name, department_id, position, salary)
+              VALUES ('Lee', 'Min-ho', 1, 'Software Engineer', 85000.00);
+            INSERT INTO employees (first_name, last_name, department_id, position, salary)
+              VALUES ('Hyun', 'Bin', 1, 'DevOps Engineer', 90000.00);
+            INSERT INTO employees (first_name, last_name, department_id, position, salary)
+              VALUES ('Gong', 'Yoo', 2, 'HR Manager', 75000.00);
+            INSERT INTO employees (first_name, last_name, department_id, position, salary)
+              VALUES ('Song', 'Joong-ki', 3, 'Marketing Specialist', 70000.00);
 
             INSERT INTO projects (name, start_date, end_date)
               VALUES ('Project Apollo', '2024-01-01', '2024-06-30');
@@ -144,10 +151,12 @@ export const DatabaseProvider = ({ children }) => {
         }
         setDb(database);
         setLoading(false);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error('Error initializing SQL.js:', error);
-      });
+      }
+    };
+
+    initDatabase();
   }, []);
 
   const updateDatabaseStorage = () => {

@@ -1,32 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ResultsDisplay = ({ results, tableTitle }) => {
+  const [animation, setAnimation] = useState(false);
+
+  useEffect(() => {
+    setAnimation(true);
+    const timer = setTimeout(() => setAnimation(false), 500);
+    return () => clearTimeout(timer);
+  }, [results]);
+
   if (!results || results.length === 0) {
-    return <p></p>;
+    return null;
   }
 
   return (
-    <div>
-      {tableTitle && <h3>{tableTitle}</h3>}
+    <div className={`results-container ${animation ? 'animate-slide-up' : ''}`}>
       {results.map((result, idx) => (
-        <table key={idx} border="1" cellPadding="5" style={{ marginBottom: '20px' }}>
-          <thead>
-            <tr>
-              {result.columns.map((col, index) => (
-                <th key={index}>{col}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {result.values.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                {row.map((cell, cellIndex) => (
-                  <td key={cellIndex}>{cell}</td>
+        <div key={idx} className="table-container">
+          <div className="table-header">
+            <div className="table-title">
+              {tableTitle ? (
+                <span>
+                  <span style={{ color: 'rgba(255,255,255,0.5)' }}>Table:</span> {tableTitle}
+                </span>
+              ) : (
+                <span>Query Result</span>
+              )}
+            </div>
+            <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
+              {result.values.length} {result.values.length === 1 ? 'row' : 'rows'}
+            </div>
+          </div>
+
+          <div className="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  {result.columns.map((col, index) => (
+                    <th key={index}>{col}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {result.values.map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {row.map((cell, cellIndex) => (
+                      <td key={cellIndex}>
+                        {cell === null ? <span style={{ color: 'rgba(255,255,255,0.3)' }}>NULL</span> : cell}
+                      </td>
+                    ))}
+                  </tr>
                 ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              </tbody>
+            </table>
+          </div>
+        </div>
       ))}
     </div>
   );
