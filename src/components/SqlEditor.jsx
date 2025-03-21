@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useRef } from 'react';
+import React, { useMemo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Editor from 'react-simple-code-editor';
 import Prism from 'prismjs';
@@ -30,6 +30,7 @@ if (Prism.languages.sql) {
 
 const SqlEditor = ({ query, setQuery }) => {
   const editorRef = useRef(null);
+  const [copied, setCopied] = useState(false);
 
   const highlightCode = useMemo(() => {
     return (code) => {
@@ -68,33 +69,60 @@ const SqlEditor = ({ query, setQuery }) => {
       }, 0);
     }
   };
-// copy
+
+  // Function to copy the current query text to the clipboard
   const copyQuery = () => {
-    console.log('Copy clicked, query:', query);
     navigator.clipboard.writeText(query)
       .then(() => {
         console.log('Query copied to clipboard!');
+        setCopied(true);
+        setTimeout(() => {
+          setCopied(false);
+        }, 1000); // Auto hide after 1 second
       })
       .catch((err) => {
         console.error('Failed to copy query:', err);
       });
   };
 
-
   return (
-    <div className="editor-container" ref={editorRef}>
-      <div className="editor-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    <div className="editor-container" ref={editorRef} style={{ overflow: 'visible' }}>
+      <div
+        className="editor-header"
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+      >
         <div style={{ display: 'flex', alignItems: 'center' }}>
-        <TbDatabaseEdit/>
+          <TbDatabaseEdit size={20} />
           <span className="editor-title" style={{ marginLeft: '8px' }}>SQL Query Editor</span>
         </div>
-
-        <Copy
-          size={18}
-          onClick={copyQuery}
-          style={{ cursor: 'pointer' }}
-          title="Copy query to clipboard"
-        />
+        <div style={{ position: 'relative' }}>
+          <Copy
+            size={18}
+            onClick={copyQuery}
+            style={{
+              cursor: 'pointer',
+              color: copied ? '#9825F8' : 'inherit'
+            }}
+            title="Copy query to clipboard"
+          />
+          {copied && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '-25px',
+                right: 0,
+                background: 'rgba(0, 0, 0, 0.75)',
+                color: '#fff',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                fontSize: '12px',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              Copied!
+            </div>
+          )}
+        </div>
       </div>
 
       <Editor
@@ -114,7 +142,14 @@ const SqlEditor = ({ query, setQuery }) => {
         textareaClassName="focus:outline-none"
         placeholder="Enter your SQL query here..."
       />
-      <div style={{ padding: '8px 16px', fontSize: '12px', color: 'rgba(255,255,255,0.5)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+      <div
+        style={{
+          padding: '8px 16px',
+          fontSize: '12px',
+          color: 'rgba(255,255,255,0.5)',
+          borderTop: '1px solid rgba(255,255,255,0.05)'
+        }}
+      >
         Press Ctrl+Enter to execute
       </div>
     </div>
