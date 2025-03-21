@@ -11,7 +11,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ['sql.js']  // Changed from exclude to include
+    include: ['sql.js']
   },
   build: {
     commonjsOptions: {
