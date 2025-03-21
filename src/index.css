@@ -164,7 +164,6 @@ h4 {
   margin: 0;
 }
 
-/* Editor Styles - Enhanced for better copy functionality */
 .editor-container {
   position: relative;
   margin: 1.5rem 0;
@@ -177,8 +176,9 @@ h4 {
 }
 
 .editor-container:focus-within {
-  box-shadow: 0 4px 25px rgba(37, 99, 235, 0.25);
-  border-color: rgba(37, 99, 235, 0.4);
+  box-shadow: 0 4px 25px rgba(168, 85, 247, 0.25);
+  border-color: rgba(168, 85, 247, 0.4);
+
 }
 
 .editor-header {
