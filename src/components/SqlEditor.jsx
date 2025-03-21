@@ -142,16 +142,29 @@ const SqlEditor = ({ query, setQuery }) => {
         textareaClassName="focus:outline-none"
         placeholder="Enter your SQL query here..."
       />
+      <div className='flex justify-between border-t border-[rgba(255,255,255,0.05)]'>
       <div
         style={{
           padding: '8px 16px',
           fontSize: '12px',
           color: 'rgba(255,255,255,0.5)',
-          borderTop: '1px solid rgba(255,255,255,0.05)'
+
         }}
       >
         Press Ctrl+Enter to execute
       </div>
+      <div
+        style={{
+          padding: '8px 16px',
+          fontSize: '12px',
+          color: 'rgba(255,255,255,0.5)',
+
+        }}
+      >
+      Created by: AninoDev
+      </div>
+      </div>
+
     </div>
   );
 };
