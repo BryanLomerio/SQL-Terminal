@@ -73,7 +73,7 @@ The application comes with a pre-loaded schema including:
 
 Sample data is automatically loaded when you first launch the application.
 
-## 🌐 WebAssembly (SQL.js) Setup
+## WebAssembly (SQL.js) Setup
 
 This project uses SQL.js, a WebAssembly-based SQLite implementation. The WASM file is loaded from:
 
@@ -103,7 +103,7 @@ To use a local copy instead:
 - Click "Show Schema" to view table structures
 - Includes column names, types, and constraints
 
-## 🛡️ CORS Configuration
+## CORS Configuration
 
 The application requires specific CORS headers for WebAssembly:
 
@@ -132,8 +132,5 @@ The built files will be in the `dist` directory.
 4. Push to the branch
 5. Open a Pull Request
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 
