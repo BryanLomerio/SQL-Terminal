@@ -85,7 +85,7 @@ const SqlEditor = ({ query, setQuery }) => {
   };
 
   return (
-    <div className="editor-container" ref={editorRef} style={{ overflow: 'visible' }}>
+    <div className="editor-container" ref={editorRef} style={{ overflow: 'hidden' }}>
       <div
         className="editor-header"
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
