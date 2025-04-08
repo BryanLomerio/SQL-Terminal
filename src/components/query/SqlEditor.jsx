@@ -6,7 +6,7 @@ import 'prismjs/components/prism-sql';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-tomorrow.css';
 import { Play, Database, Copy } from 'lucide-react';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import { TbDatabaseEdit } from "react-icons/tb";
 
 if (Prism.languages.sql) {

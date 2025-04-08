@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { DatabaseContext } from '../context/DatabaseContext';
+import { DatabaseContext } from '../../context/DatabaseContext';
 
 const SchemaDiagram = () => {
   const { db } = useContext(DatabaseContext);

@@ -1,12 +1,11 @@
 import React, { useContext, useState } from "react";
 import { DatabaseContext } from "../context/DatabaseContext";
-import QueryView from "./QueryView";
-import SchemaView from "./SchemaView";
+import QueryView from "./query/QueryView";
+import SchemaView from "./schema/SchemaView";
 import ProblemsView from "../problems/SampleProblems";
-
-import HamburgerMenu from './HamburgerMenu';
-import BackButton from './BackButton';
-import { convertMySQLtoSQLite } from '../utils/convertQuery';
+import HamburgerMenu from './common/HamburgerMenu';
+import BackButton from './common/BackButton';
+import { executeDatabaseQuery } from '../services/queryService';
 
 function MainApp() {
     const { db, loading, updateDatabaseStorage } = useContext(DatabaseContext);
@@ -17,103 +16,11 @@ function MainApp() {
     const [view, setView] = useState('query');
     const [menuOpen, setMenuOpen] = useState(false);
 
-    const executeQuery = () => {
-        if (!db) {
-            console.error("Database is not loaded");
-            setMessage("Database is not loaded yet.");
-            return;
-        }
-        try {
-            const convertedQuery = convertMySQLtoSQLite(query);
-            const match = convertedQuery.match(/FROM\s+(\w+)/i);
-            setTableTitle(match ? match[1] : '');
-
-            let columns = [];
-            if (convertedQuery.trim().toUpperCase().startsWith('SELECT')) {
-                const tableMatch = convertedQuery.match(/FROM\s+(\w+)/i);
-                if (tableMatch) {
-                    const tableName = tableMatch[1];
-                    const tableExists = db.exec(`SELECT name FROM sqlite_master WHERE type='table' AND name='${tableName}'`);
-
-                    if (tableExists.length > 0) {
-                        const tableInfo = db.exec(`PRAGMA table_info(${tableName})`);
-                        if (tableInfo.length > 0) {
-                            columns = tableInfo[0].values.map(col => col[1]);
-                        }
-                    }
-                }
-            }
-
-            const result = db.exec(convertedQuery);
-            const upperQuery = convertedQuery.trim().toUpperCase();
-
-            if (
-                upperQuery.startsWith("CREATE TABLE") ||
-                upperQuery.startsWith("DROP TABLE") ||
-                upperQuery.startsWith("ALTER TABLE") ||
-                upperQuery.startsWith("INSERT") ||
-                upperQuery.startsWith("UPDATE") ||
-                upperQuery.startsWith("DELETE") ||
-                upperQuery.startsWith("TRUNCATE")
-            ) {
-                updateDatabaseStorage();
-            }
-
-
-            if (upperQuery.startsWith("CREATE TABLE")) {
-                setMessage("Table created successfully.");
-                setResults([]);
-            } else if (upperQuery.startsWith("DROP TABLE")) {
-                setMessage("Table dropped successfully.");
-                setResults([]);
-            } else if (upperQuery.startsWith("ALTER TABLE")) {
-                setMessage("Table altered successfully.");
-                setResults([]);
-            } else if (upperQuery.startsWith("DELETE FROM")) {
-                setMessage("Records deleted successfully.");
-                if (columns.length > 0) {
-                    setResults([{
-                        columns: columns,
-                        values: []
-                    }]);
-                }
-            } else if (upperQuery.startsWith("TRUNCATE TABLE")) {
-                setMessage("Table truncated successfully.");
-                if (columns.length > 0) {
-                    setResults([{
-                        columns: columns,
-                        values: []
-                    }]);
-                }
-            } else if (
-                upperQuery.startsWith("INSERT") ||
-                upperQuery.startsWith("UPDATE")
-            ) {
-                setMessage("Operation completed successfully.");
-                setResults(result.length > 0 ? result : []);
-            } else {
-              
-                if (result.length === 0 && columns.length > 0) {
-                    setResults([{
-                        columns: columns,
-                        values: []
-                    }]);
-                    setMessage("");
-                } else if (result.length === 0) {
-                    setResults([]);
-                    if (!upperQuery.startsWith("CREATE TABLE")) {
-                        setMessage("Table does not exist.");
-                    }
-                } else {
-                    setResults(result);
-                    setMessage("");
-                }
-            }
-
-        } catch (error) {
-            console.error("Query execution error:", error);
-            setMessage("Error executing query: " + error.message);
-        }
+    const handleExecuteQuery = () => {
+        const { results, message, tableTitle } = executeDatabaseQuery(db, query, updateDatabaseStorage);
+        setResults(results);
+        setMessage(message);
+        setTableTitle(tableTitle);
     };
 
     const toggleTablesSchema = () => {
@@ -137,7 +44,7 @@ function MainApp() {
                         <QueryView
                             query={query}
                             setQuery={setQuery}
-                            executeQuery={executeQuery}
+                            executeQuery={handleExecuteQuery}
                             toggleTablesSchema={toggleTablesSchema}
                             message={message}
                             results={results}
