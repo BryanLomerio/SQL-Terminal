@@ -7,7 +7,8 @@ export const defaultSchema = `
     name VARCHAR(255) NOT NULL,
     location VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    remark TINYINT(1) DEFAULT 1 -- 1 active, 0 inactive
   );
 
   -- Employees table
@@ -20,6 +21,7 @@ export const defaultSchema = `
     salary DECIMAL(10,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    remark TINYINT(1) DEFAULT 1, -- 1 active, 0 inactive
     FOREIGN KEY(department_id) REFERENCES departments(id)
   );
 
@@ -30,7 +32,8 @@ export const defaultSchema = `
     start_date DATE DEFAULT NULL,
     end_date DATE DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    remark TINYINT(1) DEFAULT 1 -- 1 active, 0 inactive
   );
 
   -- Employee_Projects join table
@@ -38,6 +41,7 @@ export const defaultSchema = `
     employee_id INT NOT NULL,
     project_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    remark TINYINT(1) DEFAULT 1, -- 1 active, 0 inactive
     PRIMARY KEY (employee_id, project_id),
     FOREIGN KEY(employee_id) REFERENCES employees(id),
     FOREIGN KEY(project_id) REFERENCES projects(id)
@@ -54,6 +58,7 @@ export const defaultSchema = `
     zip VARCHAR(20) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    remark TINYINT(1) DEFAULT 1, -- 1 active, 0 inactive
     FOREIGN KEY(employee_id) REFERENCES employees(id)
   );
 
@@ -63,7 +68,8 @@ export const defaultSchema = `
     name VARCHAR(255) NOT NULL,
     description TEXT DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    remark TINYINT(1) DEFAULT 1 -- 1 active, 0 inactive
   );
 
   -- Provinces table
@@ -74,6 +80,7 @@ export const defaultSchema = `
     capital VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    remark TINYINT(1) DEFAULT 1, -- 1 active, 0 inactive
     FOREIGN KEY(region_id) REFERENCES regions(id)
   );
 
@@ -84,6 +91,7 @@ export const defaultSchema = `
     name VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    remark TINYINT(1) DEFAULT 1, -- 1 active, 0 inactive
     FOREIGN KEY(province_id) REFERENCES provinces(id)
   );
 
@@ -94,6 +102,7 @@ export const defaultSchema = `
     name VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    remark TINYINT(1) DEFAULT 1, -- 1 active, 0 inactive
     FOREIGN KEY(municipality_id) REFERENCES municipalities(id)
   );
 
@@ -105,15 +114,15 @@ export const defaultSchema = `
     department_id INT DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    remark TINYINT(1) DEFAULT 1, -- 1 active, 0 inactive
     FOREIGN KEY(department_id) REFERENCES departments(id)
   );
 
-  -- Departments sample data
+  -- Existing sample data...
   INSERT INTO departments (name, location) VALUES ('IT', 'Makati');
   INSERT INTO departments (name, location) VALUES ('Human Resources', 'Mandaluyong');
   INSERT INTO departments (name, location) VALUES ('Sales', 'Quezon City');
 
-  -- Employees sample data
   INSERT INTO employees (first_name, last_name, department_id, position, salary)
     VALUES ('Juan', 'Dela Cruz', 1, 'Software Engineer', 85000.00);
   INSERT INTO employees (first_name, last_name, department_id, position, salary)
@@ -122,20 +131,34 @@ export const defaultSchema = `
     VALUES ('Jose', 'Reyes', 2, 'HR Manager', 75000.00);
   INSERT INTO employees (first_name, last_name, department_id, position, salary)
     VALUES ('Ana', 'Garcia', 3, 'Sales Specialist', 70000.00);
+  INSERT INTO employees (first_name, last_name, department_id, position, salary)
+    VALUES ('Bryan', 'Lomerio', 1, 'Frontend Developer', 78000.00);
+  INSERT INTO employees (first_name, last_name, department_id, position, salary)
+    VALUES ('Ella', 'Domingo', 3, 'Sales Associate', 68000.00);
 
-  -- Projects sample data
   INSERT INTO projects (name, start_date, end_date)
     VALUES ('Project Bayanihan', '2024-01-01', '2024-06-30');
   INSERT INTO projects (name, start_date, end_date)
     VALUES ('Project Kapit', '2024-03-01', '2024-12-31');
+  INSERT INTO projects (name, start_date, end_date)
+    VALUES ('Project Alon', '2024-04-01', '2024-10-31');
+    INSERT INTO projects (name, start_date, end_date)
+  VALUES ('Project Lakbay', '2024-05-01', '2024-11-30');
 
-  -- Employee_Projects sample data
-  INSERT INTO employee_projects (employee_id, project_id) VALUES (1, 1);
-  INSERT INTO employee_projects (employee_id, project_id) VALUES (2, 1);
-  INSERT INTO employee_projects (employee_id, project_id) VALUES (1, 2);
-  INSERT INTO employee_projects (employee_id, project_id) VALUES (4, 2);
+INSERT INTO projects (name, start_date, end_date)
+  VALUES ('Project Luntian', '2024-06-01', '2025-01-31');
 
-  -- Addresses sample data
+INSERT INTO projects (name, start_date, end_date)
+  VALUES ('Project Liwanag', '2024-07-15', '2025-03-15');
+
+
+INSERT INTO employee_projects (employee_id, project_id) VALUES (3, 2); -- Jose -> Project Lakbay
+INSERT INTO employee_projects (employee_id, project_id) VALUES (5, 4); -- Bryan -> Project Lakbay
+INSERT INTO employee_projects (employee_id, project_id) VALUES (2, 5); -- Maria -> Project Luntian
+INSERT INTO employee_projects (employee_id, project_id) VALUES (6, 5); -- Ella -> Project Luntian
+INSERT INTO employee_projects (employee_id, project_id) VALUES (1, 6); -- Juan -> Project Liwanag
+INSERT INTO employee_projects (employee_id, project_id) VALUES (4, 6); -- Ana -> Project Liwanag
+
   INSERT INTO addresses (employee_id, address_line1, address_line2, city, state, zip)
     VALUES (1, '123 Mabini St', 'Apt 4', 'Manila', 'Metro Manila', '1001');
   INSERT INTO addresses (employee_id, address_line1, address_line2, city, state, zip)
@@ -144,33 +167,33 @@ export const defaultSchema = `
     VALUES (3, '789 Bonifacio St', 'Suite 5', 'Cebu City', 'Cebu', '6000');
   INSERT INTO addresses (employee_id, address_line1, address_line2, city, state, zip)
     VALUES (4, '321 EDSA', '', 'Davao City', 'Davao', '8000');
+  INSERT INTO addresses (employee_id, address_line1, address_line2, city, state, zip)
+    VALUES (5, '122 Katipunan', 'Unit 9', 'Pasig', 'Metro Manila', '1600');
 
-  -- Regions sample data
   INSERT INTO regions (name, description) VALUES ('Luzon', 'Main island group of the Philippines.');
   INSERT INTO regions (name, description) VALUES ('Visayas', 'Central islands of the Philippines.');
   INSERT INTO regions (name, description) VALUES ('Mindanao', 'Southern island group of the Philippines.');
 
-  -- Provinces sample data
   INSERT INTO provinces (region_id, name, capital) VALUES (1, 'Pampanga', 'San Fernando');
   INSERT INTO provinces (region_id, name, capital) VALUES (1, 'Bulacan', 'Malolos');
   INSERT INTO provinces (region_id, name, capital) VALUES (2, 'Cebu', 'Cebu City');
   INSERT INTO provinces (region_id, name, capital) VALUES (3, 'Davao del Sur', 'Digos');
 
-  -- Municipalities sample data
   INSERT INTO municipalities (province_id, name) VALUES (1, 'Angeles City');
   INSERT INTO municipalities (province_id, name) VALUES (2, 'Meycauayan');
   INSERT INTO municipalities (province_id, name) VALUES (3, 'Lapu-Lapu City');
   INSERT INTO municipalities (province_id, name) VALUES (4, 'Bansalan');
+  INSERT INTO municipalities (province_id, name) VALUES (3, 'Toledo');
 
-  -- Barangays sample data
   INSERT INTO barangays (municipality_id, name) VALUES (1, 'Balibago');
   INSERT INTO barangays (municipality_id, name) VALUES (2, 'Sto. Niño');
   INSERT INTO barangays (municipality_id, name) VALUES (3, 'Maribago');
   INSERT INTO barangays (municipality_id, name) VALUES (4, 'Poblacion');
+  INSERT INTO barangays (municipality_id, name) VALUES (5, 'Ibo');
 
-  -- Offices sample data
   INSERT INTO offices (name, location, department_id) VALUES ('Main Office', 'Makati', 1);
   INSERT INTO offices (name, location, department_id) VALUES ('Regional Office', 'Quezon City', 2);
+  INSERT INTO offices (name, location, department_id) VALUES ('Sales HQ', 'Pasay', 3);
 `;
 
 export const initDatabaseInstance = async (initSqlJs, base64ToUint8Array) => {
