@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import SqlEditor from './SqlEditor';
 import ResultsDisplay from './ResultDisplay';
 import { Play, Database } from 'lucide-react';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 
 const QueryView = ({
   query,
