@@ -494,8 +494,11 @@ tbody tr:last-child td {
   align-self: flex-end;
   cursor: pointer;
   font-size: 0.75rem;
+  padding: 5px;
 }
-
+.copy-button:hover{
+  background-color: rgba(255, 255, 255, 0.1);
+}
 /* Navigation and Menu */
 .menu-button {
   background: rgba(255, 255, 255, 0.1);

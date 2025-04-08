@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Button } from '../components/ui/button';
+import DifficultyFilters from './DifficultyFilters';
+import ProblemCard from './ProblemCard';
 
 const SampleProblems = () => {
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
@@ -407,81 +408,21 @@ const SampleProblems = () => {
     }
   ];
 
-  const filteredProblems = selectedDifficulty === 'all'
-    ? problems
-    : problems.filter(problem => problem.difficulty === selectedDifficulty);
+  const filteredProblems =
+    selectedDifficulty === 'all'
+      ? problems
+      : problems.filter(problem => problem.difficulty === selectedDifficulty);
 
   return (
     <div className="problems-container">
       <h3 className="problems-title">SQL Practice Problems</h3>
-
-      <div className="difficulty-filters">
-        <Button
-          variant={selectedDifficulty === 'all' ? "default" : "outline"}
-          onClick={() => setSelectedDifficulty('all')}
-          className="filter-button cursor-pointer"
-        >
-          All
-        </Button>
-        <Button
-          variant={selectedDifficulty === 'easy' ? "default" : "outline"}
-          onClick={() => setSelectedDifficulty('easy')}
-          className="filter-button cursor-pointer"
-        >
-          Easy
-        </Button>
-        <Button
-          variant={selectedDifficulty === 'intermediate' ? "default" : "outline"}
-          onClick={() => setSelectedDifficulty('intermediate')}
-          className="filter-button cursor-pointer"
-        >
-          Intermediate
-        </Button>
-        <Button
-          variant={selectedDifficulty === 'hard' ? "default" : "outline"}
-          onClick={() => setSelectedDifficulty('hard')}
-          className="filter-button cursor-pointer"
-        >
-          Hard
-        </Button>
-        <Button
-          variant={selectedDifficulty === 'super hard' ? "default" : "outline"}
-          onClick={() => setSelectedDifficulty('super hard')}
-          className="filter-button cursor-pointer"
-        >
-          Super Hard
-        </Button>
-      </div>
-
+      <DifficultyFilters
+        selectedDifficulty={selectedDifficulty}
+        setSelectedDifficulty={setSelectedDifficulty}
+      />
       <div className="problems-grid">
         {filteredProblems.map(problem => (
-          <div key={problem.id} className="schema-table problem-card">
-            <h3 className="problem-title">{problem.title}</h3>
-            <div className="problem-content">
-              <p className="problem-description">{problem.description}</p>
-
-              <details className="problem-details">
-                <summary className="problem-summary">Show Hint</summary>
-                <p className="problem-hint">{problem.hint}</p>
-              </details>
-
-              <details className="problem-details">
-                <summary className="problem-summary">Show Solution</summary>
-                <pre className="problem-solution">{problem.solution}</pre>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="copy-button"
-                  onClick={() => {
-                    navigator.clipboard.writeText(problem.solution);
-
-                  }}
-                >
-                  Copy
-                </Button>
-              </details>
-            </div>
-          </div>
+          <ProblemCard key={problem.id} problem={problem} />
         ))}
       </div>
     </div>
