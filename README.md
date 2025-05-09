@@ -2,8 +2,6 @@
 
 A browser-based SQL terminal that runs entirely client-side using SQL.js (WebAssembly). Practice SQL queries with a pre-loaded schema and sample data, with your work automatically saved in localStorage.
 
-## Feb 9, 2025
-
 ##  Features
 
 - No backend required - runs completely in your browser
