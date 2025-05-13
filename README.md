@@ -12,7 +12,6 @@ A browser-based SQL terminal that runs entirely client-side using SQL.js (WebAss
 - Practice problems with hints and solutions
 - Syntax highlighting for SQL queries
 - Table schema viewer
-- Keyboard shortcuts (Ctrl/Cmd + Enter to execute queries)
 
 ##  Tech Stack
 
