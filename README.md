@@ -15,7 +15,6 @@ A browser-based SQL terminal that runs entirely client-side using SQL.js (WebAss
 
 ##  Tech Stack
 
-- React 18.3
 - SQL.js (WebAssembly-based SQLite)
 - Tailwind CSS
 - Shadcn/ui Components
